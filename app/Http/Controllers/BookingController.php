@@ -92,6 +92,14 @@ class BookingController extends Controller
         try {
                 $seatCount=$request->no_of_sheet;
                 //check available sheet validation
+                $availableSeats=Seat::where('booking_status',0)->count('id');
+                if ($seatCount>$availableSeats) {
+                    $response = array(
+                        'status' => 'error',
+                        'msg' => 'Seats Not Available!!',
+                    );
+                    return response()->json($response);
+                }
                 //end validation
                 $rowRecord=Row::where('available_qty','>=',$seatCount)->where('available_qty','>',0)->orderBy('available_qty','asc')->get();
                 if (count($rowRecord)==0) {
@@ -108,13 +116,7 @@ class BookingController extends Controller
                         $seatCount=0;//because all sheet are booked by fulfill condition
                     }else{
                         if ($row->available_qty>$seatCount) {
-                            $leftsheet=$row->available_qty-$seatCount;
-                            //first way
-                            // for ($i=1; $i <= $seatCount; $i++) {
-                            //     //multi query so rejected
-                            //     $seats=Seat::where('row_id',$row->id)->where('booking_status',0)->update(['booking_status'=>1]);
-                            // }
-                            //second way
+                            $leftsheet=$row->available_qty-$seatCount;//row qty will be decrease on particular row
                             $seats=Seat::where('row_id',$row->id)->where('booking_status',0)->take($seatCount)->get();//when not equal then again foreach
                             $idarr=[];
                             foreach ($seats as $key => $seat) {
@@ -124,14 +126,7 @@ class BookingController extends Controller
                            $update= Seat::whereIn('id',$idarr)->update(['booking_status'=>1]); //status update in seats table
                             $seatCount=0;//because all sheet are booked by fulfill condition
                         }else{ //continue till sheet not book completed
-                            //Note:- if they want that if avlqty less then bookqty then not book any sheet then logic may change)
                             $leftsheet=0; //row qty will be zero on particular row
-                            //first way
-                            // for ($i=1; $i <= $seatCount; $i++) {
-                            //     //multi query so rejected
-                            //     $seats=Seat::where('row_id',$row->id)->where('booking_status',0)->update(['booking_status'=>1]);
-                            // }
-                            //second way
                             $seatCount=$seatCount-$row->available_qty; //decrease sheet count
                             $seats=Seat::where('row_id',$row->id)->where('booking_status',0)->take($row->available_qty)->get();//take all avl qty of a particular row
                             $idarr=[];
@@ -143,10 +138,6 @@ class BookingController extends Controller
                         }
                     }
                     //need to update qty in row table
-                    // $rowData=Row::find($row->id);
-                    // $rowData->available_qty=$leftsheet;
-                    // $rowData->save();
-                    //or
                     $row->available_qty=$leftsheet;
                     $row->save();
                 }
@@ -156,7 +147,6 @@ class BookingController extends Controller
                 );
                 return response()->json($response);
         } catch (\Exception $e) {
-            //dd($e);
             $response = array(
                 'status' => 'error',
                 'msg' => 'Something missing!!',
