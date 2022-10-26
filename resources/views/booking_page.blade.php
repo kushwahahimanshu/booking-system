@@ -33,8 +33,10 @@
                       <input type="text" style="width: 13%; height: 5%" name="no_of_sheet" id="inputSeat" required>
                       {{-- <input type="number" class="form-control" id="inputSeat" placeholder="Seat qty" required onkeypress="return isNumberKey(this.value)"> --}}
                     </div>
-                    <button type="submit" class="btn btn-primary mb-2" id="himanshu">Book</button>
-                    <a href="{{'/'}}"><button type="button" class="btn btn-info mb-2">Return To List</button></a>
+                    <div class="mb-2">
+                        <button type="submit" class="btn btn-primary mb-2" id="himanshu">Book</button>
+                    </div>
+                    {{-- <a href="{{'/'}}"><button type="button" class="btn btn-info mb-2">Return To List</button></a> --}}
                 </form>
             </div>
             <div class="col-md-4">
@@ -85,6 +87,7 @@
                 data: {no_of_sheet:no_of_sheet, _token: "{{ csrf_token() }}"},
                 success: function( response ) {
                     alert( response.msg);
+                    location.reload();
                 }
             });
         });
