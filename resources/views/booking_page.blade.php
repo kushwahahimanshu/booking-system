@@ -42,7 +42,7 @@
             <div class="col-md-4">
                 {{-- <?php dd($rowdata); ?> --}}
                 @if (!empty($rowdata))
-                <?php $rowtype = ['A','B','C','D','E','F','G','H','I','J','K','L'];$count1=0; ?>
+                <?php $rowtype = ['A','B','C','D','E','F','G','H','I','J','K','L','M'];$count1=0; ?>
                     @foreach ($rowdata as $row)
 
                     <div style='justify-content:center'>

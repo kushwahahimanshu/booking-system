@@ -15,7 +15,7 @@ class BookingController extends Controller
     }
     public function seatInsertion(Request $request)
     {
-        for ($i=1; $i <= 80; $i++) {
+        for ($i=1; $i <= 101; $i++) {
             $new = new Seat();
             $new->seat_name='S'.$i;
             $new->save();
@@ -24,47 +24,66 @@ class BookingController extends Controller
     }
     public function rowInsertion(Request $request)
     {
-        for ($i=1; $i <= 12; $i++) {
+        for ($i=1; $i <= 13; $i++) {
             $new = new Row();
-            if ($i<12) {
-             $new->available_qty=7;
+            if ($i<13) {
+             $new->available_qty=8;
             }else
-            $new->available_qty=3;
+            $new->available_qty=5;
             $new->save();
         }
         return "Seat insertion done";
     }
     public function seatUpdate(Request $request)
     {
-        for ($i=1; $i <= 80; $i++) {
+        $seatCount= 101;
+        //$no_of_row=$seatCount/8;
+        $seatCount=8;
+        $per_row_count=8;
+        $row_id=1;
+        for ($i=1; $i <= 101; $i++) {
             $new = Seat::find($i);
-            if ($i<=7) {
-                $new->row_id=1;
-            } else if ($i<=14) {
-                $new->row_id=2;
-            }else if ($i<=21) {
-                $new->row_id=3;
-            }else if ($i<=28) {
-                $new->row_id=4;
-            }else if ($i<=35) {
-                $new->row_id=5;
-            }else if ($i<=42) {
-                $new->row_id=6;
-            }else if ($i<=49) {
-                $new->row_id=7;
-            }else if ($i<=56) {
-                $new->row_id=8;
-            }else if ($i<=63) {
-                $new->row_id=9;
-            }else if ($i<=70) {
-                $new->row_id=10;
-            }else if ($i<=77) {
-                $new->row_id=11;
-            }else{
-                $new->row_id=12;
+            if ($i<=$seatCount) {
+                $new->row_id=$row_id;
+            }elseif ($i>$seatCount) {
+                $row_id++;
+                $seatCount= $per_row_count*$row_id;
+                $new->row_id=$row_id;
+            }
+            else{
+                $new->row_id=$row_id;
             }
             $new->save();
         }
+
+
+            // if ($i<=8) {
+            //     $new->row_id=1;
+            // } else if ($i<=14) {
+            //     $new->row_id=2;
+            // }else if ($i<=21) {
+            //     $new->row_id=3;
+            // }else if ($i<=28) {
+            //     $new->row_id=4;
+            // }else if ($i<=35) {
+            //     $new->row_id=5;
+            // }else if ($i<=42) {
+            //     $new->row_id=6;
+            // }else if ($i<=49) {
+            //     $new->row_id=7;
+            // }else if ($i<=56) {
+            //     $new->row_id=8;
+            // }else if ($i<=63) {
+            //     $new->row_id=9;
+            // }else if ($i<=70) {
+            //     $new->row_id=10;
+            // }else if ($i<=77) {
+            //     $new->row_id=11;
+            // }else{
+            //     $new->row_id=12;
+            // }
+            // $new->save();
+        //}
         return "Seat Update done";
     }
     // public function bookSeat(Request $request)
